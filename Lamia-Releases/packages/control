@@ -1,0 +1,13 @@
+Package: lamia-libs
+Version: 0.3.0
+Section: devel
+Priority: optional
+Architecture: amd64
+Depends: libc6 (>= 2.17), libstdc++6 (>= 5.4.0)
+Maintainer: The Medusa Project <lamia@medusa-project.org>
+Description: Lamia Language Libraries
+ Revolutionary programming language libraries featuring 3D emotions,
+ social protocols, and native manufacturing integration.
+ .
+ This package contains 20+ production-ready shared libraries.
+Homepage: https://github.com/The-Medusa-Initiative-Project/Lamia-Libs

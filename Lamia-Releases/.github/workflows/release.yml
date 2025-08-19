@@ -1,0 +1,44 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup C++ environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++ make pandoc zip
+    
+    - name: Build all libraries
+      run: |
+        make all
+        cd Lamia-Libs && make all
+        cd ../manufacturing_bridges && make all
+    
+    - name: Generate release artifacts
+      run: |
+        cd Lamia-Releases/scripts
+        ./build_packages.sh
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Lamia ${{ github.ref_name }} - Revolutionary Release
+        body_path: RELEASE_NOTES.md
+        files: |
+          lamia-*.tar.gz
+          lamia-*.deb
+          lamia-*.zip
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
