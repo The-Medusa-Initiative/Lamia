@@ -31,14 +31,15 @@ install: $(TARGET)
 	@echo "✅ Installation complete!"
 
 deploy: $(TARGET)
-	@echo "🚀 Deploying to production server 172.236.28.155..."
-	sshpass -p "7303nmU8Q29WjXpPlumsBAXyJjMt" scp $(TARGET) root@172.236.28.155:/root/
-	sshpass -p "7303nmU8Q29WjXpPlumsBAXyJjMt" scp -r web root@172.236.28.155:/root/
+	@echo "🚀 Deploying to production server..."
+	@echo "⚠️  Using secure credential vault for deployment"
+	@./scripts/deploy_secure.sh $(TARGET)
 	@echo "✅ Deployment complete!"
 
 start-production: deploy
 	@echo "⚡ Starting production server..."
-	sshpass -p "7303nmU8Q29WjXpPlumsBAXyJjMt" ssh root@172.236.28.155 "cd /root && pkill -f medusaserv || true && nohup ./$(TARGET) > medusaserv_auth.log 2>&1 &"
+	@echo "⚠️  Using secure credential vault for startup"
+	@./scripts/start_secure.sh $(TARGET)
 	@echo "✅ Production server started!"
 
 test: $(TARGET)
@@ -49,7 +50,7 @@ test: $(TARGET)
 	./test_server &
 	@sleep 2
 	@echo "Testing login flow..."
-	curl -X POST -d "username=medusa&password=izJaRuA2kwbNwezvKsCzo7DUNnQc" http://localhost:8080/login
+	curl -X POST -d "username=test&password=test" http://localhost:8080/login
 	@echo "✅ Test complete!"
 	pkill -f test_server || true
 	rm -f test_server test_server.cpp
@@ -68,7 +69,7 @@ help:
 	@echo "  help             - Show this help message"
 	@echo ""
 	@echo "Features:"
-	@echo "  ✅ IP Whitelisting (72.14.201.65 authorized)"
+	@echo "  ✅ IP Whitelisting (secure ranges authorized)"
 	@echo "  ✅ Native Lamia Processing"
 	@echo "  ✅ Corporate cPanel-style Interface"
 	@echo "  ✅ 6 Admin Snippets with search capability"
